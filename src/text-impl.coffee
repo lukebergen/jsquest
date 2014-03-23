@@ -22,8 +22,13 @@ TextImpl.init()
 $ ->
   $('#load-url').click (e) ->
     url = $("#url-to-load").val().replace("http://", "")
+    hostname = $('<a>').prop('href', "http://#{url}").prop('hostname')
     $.get "http://www.corsproxy.com/#{url}", (response) ->
-      response = response.replace /<script[\s\S]*?\/script>/gi, ''
+      response = $(response.replace(/<script[\s\S]*?\/script>/gi, ''))
+      response.find('a:not([href])').remove()
+      $(response).find('a').each ->
+        href = $(@).prop('href').replace("localhost:9090", hostname)
+        $(@).prop('href', "#{href}")
       $("#source-page").html(response)
       JsQuest.pageSourceUrl = url
       JsQuest.parsePage()
