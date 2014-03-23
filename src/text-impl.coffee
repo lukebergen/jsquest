@@ -18,3 +18,12 @@ TextImpl =
       console.log("moving #{direction}")
 
 TextImpl.init()
+
+$ ->
+  $('#load-url').click (e) ->
+    url = $("#url-to-load").val().replace("http://", "")
+    $.get "http://www.corsproxy.com/#{url}", (response) ->
+      response = response.replace /<script[\s\S]*?\/script>/gi, ''
+      $("#source-page").html(response)
+      JsQuest.pageSourceUrl = url
+      JsQuest.parsePage()

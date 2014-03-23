@@ -4,11 +4,13 @@ JsQuest.Random = {}
 
 JsQuest.Random.seeds = {}
 
-JsQuest.Random.reseed = ->
-  strToInt = (str) ->
+JsQuest.Random._strToInt = (str) ->
     result = 1
     result += c.charCodeAt(0) for c in str
     result % 1000000000000
+
+JsQuest.Random.reseed = ->
+  strToInt = JsQuest.Random._strToInt
 
   domainParts = window.location.hostname.split('.')
   if domainParts[-1] == 'uk'
@@ -30,7 +32,11 @@ JsQuest.Random.reseed = ->
 
 JsQuest.Random.rand = (min, max, consistency = 4) ->
   JsQuest.Random.reseed() unless JsQuest.Random.seeds[1]?
-  num = Math.random()
-  if consistency < 4
+
+  if typeof consistency == "string"
+    num = Math.abs(Math.sin(JsQuest.Random._strToInt(consistency)) * 10000 % 1)
+  else if consistency == 4
+    num = Math.random()
+  else
     num = Math.abs(Math.sin(JsQuest.Random.seeds[consistency]++) * 10000 % 1)
   num * (max - min) + min
