@@ -26,6 +26,7 @@ JsQuest.createExits = ->
     el.href != ""  &&
     el.href != JsQuest.pageSourceUrl &&
     el.href.indexOf("#") == -1 &&
+    el.href.indexOf("mailto:") == -1 &&
     el.href.indexOf("javascript:") == -1 &&
     $(el).width() * $(el).height() >= JsQuest.config.minRelevantAnchorSize
 
