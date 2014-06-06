@@ -1,5 +1,6 @@
 TextImpl = 
 
+  # TODO: exitDescriptions could be done better. Base it off of a standard deviation so there aren't myriad cracks on some sites, etc...
   config:
     exitDescriptions:
       "crossDomain": "Some kind of glowing portal"

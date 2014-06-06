@@ -1,4 +1,4 @@
-JsQuest = JsQuest || {}
+JsQuest = window.JsQuest || {}
 window.JsQuest = JsQuest
 
 JsQuest.debug =
@@ -8,16 +8,22 @@ JsQuest.debug =
     ).join("\n")
 
 JsQuest.config =
-    minRelevantAnchorSize: 500
+    minRelevantAnchorSize: 500,
+    geographies: ['castle', 'desert', 'jungle', 'sky', 'cave', 'ice', 'other']
 
 JsQuest.parsePage = ->
   JsQuest.page = $("#source-page")
   # JsQuest.fetchPersistenceData()
-  # JsQuest.createEnvironment()
+  JsQuest.createEnvironment()
   JsQuest.createExits()
   # JsQuest.createEnemies()
   # JsQuest.createObjects()
   # JsQuest.createNPCs()
+
+JsQuest.createEnvironment = ->
+  JsQuest.environment = {}
+  rand = JsQuest.Random.randInt(0, JsQuest.config.geographies.length - 1, 0)
+  JsQuest.environment.geography = JsQuest.config.geographies[rand]
 
 JsQuest.createExits = ->
   JsQuest.exits = []
@@ -29,6 +35,7 @@ JsQuest.createExits = ->
     el.href.indexOf("mailto:") == -1 &&
     el.href.indexOf("javascript:") == -1 &&
     $(el).width() * $(el).height() >= JsQuest.config.minRelevantAnchorSize
+    # TODO: lots of other links that we want to avoid. Grab the mimi-type and kill any exe/downloadable files, etc...
 
   groupedEls = anchorEls.groupBy (el) -> el.href
 

@@ -5,9 +5,9 @@ JsQuest.Random = {}
 JsQuest.Random.seeds = {}
 
 JsQuest.Random._strToInt = (str) ->
-    result = 1
-    result += c.charCodeAt(0) for c in str
-    result % 1000000000000
+  result = 1
+  result += c.charCodeAt(0) for c in str
+  result % 1000000000000
 
 JsQuest.Random.reseed = ->
   strToInt = JsQuest.Random._strToInt
@@ -40,3 +40,6 @@ JsQuest.Random.rand = (min, max, consistency = 4) ->
   else
     num = Math.abs(Math.sin(JsQuest.Random.seeds[consistency]++) * 10000 % 1)
   num * (max - min) + min
+
+JsQuest.Random.randInt = (min, max, consistency = 4) ->
+  Math.round(JsQuest.Random.rand(min, max, consistency))
