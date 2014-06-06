@@ -15,6 +15,9 @@ TextImpl =
     for key, value of TextImpl.windowFunctions
       window[key] = value
 
+  put: (str) ->
+    $(".jsquest").find("#console").append("<li>#{str}</li>")
+
   loadUrl: (url) ->
     ourHostname = location.host
     hostname = $('<a>').prop('href', "http://#{url}").prop('hostname')
@@ -32,19 +35,23 @@ TextImpl =
       $("#source-page").html(response)
       JsQuest.pageSourceUrl = url
       JsQuest.parsePage()
-      console.log("You find yourself in #{url}")
+      TextImpl.put("You find yourself in #{url}")
 
   windowFunctions:
+    admin:
+      load: (url) ->
+        TextImpl.loadUrl(url)
+
     help: ->
-      console.log("known top-level functions:\n" + (k for k, v of TextImpl.windowFunctions).join("\n") )
+      TextImpl.put("known top-level functions:\n" + (k for k, v of TextImpl.windowFunctions).join("\n") )
       null
     look: (obj = "area") ->
       if obj == "area"
-        console.log("you find yourself in #{JsQuest.pageSourceUrl}")
-        console.log("you see #{JsQuest.exits.length} exits")
-        console.log("you see... other things")
+        TextImpl.put("You find yourself in #{JsQuest.pageSourceUrl}")
+        TextImpl.put("You see #{JsQuest.exits.length} exits")
+        TextImpl.put("You see... other things")
       if obj == "exits"
-        console.log("you see\n")
+        TextImpl.put("you see\n")
         JsQuest.exits.each (exit) ->
           if exit.destination.has(TextImpl.pageDomain)
             winningText = ""
@@ -54,12 +61,12 @@ TextImpl =
           else
             winningText = TextImpl.config.exitDescriptions.crossDomain
           index = JsQuest.exits.indexOf(exit)
-          console.log("#{winningText} (#{index} : #{exit.destination}) \n")
+          TextImpl.put("#{winningText} (#{index} : #{exit.destination}) \n")
       null
 
     move: (to = "nowhere") ->
       if to == 'nowhere'
-        console.log("you pace back and forth")
+        TextImpl.put("you pace back and forth")
       else
         exit = JsQuest.exits[to]
         exit = (JsQuest.exits.find (e) -> e.destination == to) unless exit?
@@ -67,15 +74,24 @@ TextImpl =
           url = exit.destination.replace(/http[s]?:\/\//, "")
           TextImpl.loadUrl(url)
         else
-          console.log("you don't know how to go there. Maybe take another look around")
+          TextImpl.put("you don't know how to go there. Maybe take another look around")
       null
 
 TextImpl.init()
 
 $ ->
+  TextImpl.loadUrl("www.github.com")
+
   $('#load-url').click (e) ->
-    url = $("#url-to-load").val().replace("http://", "")
+    url = $("#url-to-load").val().replace("http://", "").replace("https://", "")
     TextImpl.loadUrl(url)
+
+  $('.jsquest').find('#console-input').keypress (e) ->
+    if e.keyCode == 13
+      e.preventDefault()
+      line = $('.jsquest').find('#console-input').val()
+      eval line
+      $('.jsquest').find('#console-input').val('')
 
 $.ajaxSettings.beforeSend = (xhr, b, c) ->
   xhr.setRequestHeader('X-Requested-With', location.host)

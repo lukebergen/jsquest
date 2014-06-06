@@ -5,11 +5,39 @@
     <script src="dist/random.js"></script>
     <script src="dist/jsquest.js"></script>
     <script src="dist/text-impl.js"></script>
+
+    <style>
+      .source-page {
+        position: fixed;
+        opacity: 0.1;
+        width: 1px;
+        height: 1px;
+      }
+      .jsquest {
+        position: absolute;
+        width: 100%;
+        height: 100vh;
+        z-index: 100;
+      }
+      .jsquest #console-input {
+        position: fixed;
+        width: 100%;
+        height: 20px;
+        bottom: 10px;
+      }
+      .jsquest #console {
+        margin-bottom: 40px;
+        bottom: 30px;
+        list-style: none;
+        overflow: scroll;
+      }
+    </style>
   </head>
   <body>
-    <div>
-      <input id="url-to-load" type="text" value="http://www.reviewed.com"><button id="load-url">load</button>
+    <div class="jsquest">
+      <ul id="console"></ul>
+      <input id="console-input" type="text" autofocus>
     </div>
-    <div style="margin: -100000px -100000px;" id="source-page"></div>
+    <div class="source-page" id="source-page"></div>
   </body>
 </html>
